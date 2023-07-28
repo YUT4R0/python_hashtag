@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashtag</title>
+    <!-- websocket (socket.io)-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.js" integrity="sha512-Z6C1p1NIexPj5MsVUunW4pg7uMX6/TT3CUVldmjXx2kpip1eZcrAnxIusDxyFIikyM9A61zOVNgvLr/TGudOQg==" crossorigin="anonymous" referrerpolicy="no-referrer" /></script>
+    <!-- jquery (will manage all js code for html this site) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+    <header>
+        <h1>HASHZAP</h1>
+    </header>
+
+    <main>
+        <section>
+            <div id="message_area">
+                <div id="message_container">
+                </div>
+            </div>
+        </section>
+        <section>
+            <div id="input_container">
+                <input type="text" id="user" placeholder="User" required>        
+                <input type="text" id="message" placeholder="Send a message..." required>        
+                <button id="send_btn">Send</button>
+            </div>
+        </section>
+    </main>
+
+    <script type="text/javascript">
+        $(document).ready(() => {
+            const socket = io('192.168.1.4:5000')
+            const user = $('#user')
+            const message = $('#message')
+
+            socket.on('connect', () => console.log('connected user!'))
+
+            socket.on('message', (data) => {
+                $('#message_container').append($('<p>').text(data))
+            })
+
+            $('#send_btn').on('click', () => {
+                socket.send(`${user.val()}: ${message.val()}`)
+                message.val('')
+            })
+        })
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #1b2721;
+        }
+
+        header {
+            background: #075e54;
+            color: #fff;
+            padding: .75rem;
+            text-align: center;
+        }
+
+        main section #message_area {
+            display: flex;
+            flex-direction: column;
+            margin: .25rem auto;
+        }
+
+        main section #message_container p {
+            background-color: #DCF8C6;
+            padding: .5rem;
+            border-radius: .25rem;
+            margin: .75rem 0;
+            width: fit-content;
+        }
+
+        main section #input_container {
+            display: flex;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #a5a5a5;
+            padding: .75rem;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        main section #input_container input[type="text"] {
+            padding: .75rem;
+            border: none;
+            outline: none;
+            flex: 1;
+        }
+
+        main section #input_container input#user {
+            margin-right: .75rem;
+            width: 30%;   
+        }
+
+        main section #input_container input#message {
+            flex: 1;
+        }
+
+        main section #input_container button {
+            padding: .75rem 1.25rem;
+            background-color: #075E54;
+            color: #FFF;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            margin-left: .75rem;
+        }
+    </style>
+</body>
+</html>
